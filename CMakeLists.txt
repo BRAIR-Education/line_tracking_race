@@ -10,7 +10,7 @@ project(line_tracking_race)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  stds_msgs
+  std_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -70,7 +70,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate added messages and services with any dependencies listed here
 # generate_messages(
 #   DEPENDENCIES
-#   stds_msgs
+#   std_msgs
 # )
 
 ################################################
@@ -105,7 +105,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES line_tracking_race
-#  CATKIN_DEPENDS roscpp rospy stds_msgs
+#  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
