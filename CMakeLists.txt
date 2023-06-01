@@ -4,7 +4,7 @@ project(line_tracking_race)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
-  stds_msgs
+  std_msgs
 )
 
 catkin_package()
