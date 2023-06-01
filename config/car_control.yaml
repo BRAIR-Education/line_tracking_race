@@ -1,4 +1,4 @@
-rrbot:
+car:
   # Publish all joint states
   joint_state_controller:
     type: joint_state_controller/JointStateController
@@ -8,12 +8,10 @@ rrbot:
   joints_velocity_controller:
     type: effort_controllers/JointGroupVelocityController
     joints:
-      - axel_front_right
-      - axel_front_left
-      - axel_back_left
-      - axel_back_right
-    joint1:
+      - axle_front_right
+      - axle_front_left
+    axle_front_right:
       pid: {p: 1000.0, i: 0.1, d: 3.0}
-    joint2:
+    axle_front_left:
       pid: {p: 1000.0, i: 0.1, d: 3.0}
 

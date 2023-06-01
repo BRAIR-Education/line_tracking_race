@@ -7,8 +7,7 @@
   <!--
             To generate the correct .URDF from this XACRO file see https://answers.ros.org/question/10401/how-to-convert-xacro-file-to-urdf-file/
     -->
-  <!--########### COLORS used for the links ###########-->
-  <!--colors are currently implemented as macro because just defining them, as shown in the ROS tutorial, seems not to work-->
+  <!--########### COLORS used for the links. Only in RViz, for Gazebo is different ###########-->
   <material name="box_material">
     <color rgba="1 0.15 0.08 0.3"/>
   </material>
@@ -41,13 +40,57 @@
     </collision>
   </link>
   <gazebo reference="chassis">
-    <material>Gazebo/RedBright </material>
+    <material>Gazebo/RedTransparent</material>
   </gazebo>
+  <!-- Dummy link with null inertia for KDL -->
   <link name="base_link"/>
   <joint name="base_link_to_chassis" type="fixed">
     <parent link="base_link"/>
     <child link="chassis"/>
   </joint>
+  <!-- Joint to articulate the front wheels -->
+  <link name="front_axle">
+    <inertial>
+      <origin rpy="-1.570795 0 0" xyz="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.01875" ixy="0" ixz="0" iyy="0.04541666666666667" iyz="0" izz="0.056666666666666664"/>
+    </inertial>
+    <visual>
+      <origin rpy="-1.570795 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.6" radius="0.06"/>
+      </geometry>
+      <material name="camera_material"/>
+    </visual>
+    <collision>
+      <origin rpy="-1.570795 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.6" radius="0.05"/>
+      </geometry>
+    </collision>
+  </link>
+  <gazebo reference="front_axle">
+    <material>Gazebo/YellowGlow</material>
+  </gazebo>
+  <joint name="steer_front" type="continuous">
+    <origin rpy="0 0 0" xyz="0.5 0 -0.15"/>
+    <axis xyz="0 0 1"/>
+    <parent link="chassis"/>
+    <child link="front_axle"/>
+    <dynamics damping="0.01" friction="0.01"/>
+    <limit effort="50.0" velocity="50.0"/>
+  </joint>
+  <!-- <transmission name="trans_steer_front">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="steer_front">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="steer_front_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </actuator>
+    </transmission> -->
+  <!-- Add wheels, only the front one are actuated -->
   <link name="wheel_front_left">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -66,19 +109,30 @@
       <geometry>
         <cylinder length="0.2" radius="0.25"/>
       </geometry>
+      <contact_coefficients kd="10000.0" kp="20000.0" mu="0.5"/>
     </collision>
   </link>
-  <joint name="axel_front_left" type="continuous">
-    <origin rpy="-1.570795 0 0" xyz="0.4 0.3 -0.15"/>
+  <joint name="axle_front_left" type="continuous">
+    <origin rpy="-1.570795 0 0" xyz="0 0.3 0"/>
     <axis xyz="0 0 1"/>
-    <parent link="chassis"/>
+    <parent link="front_axle"/>
     <child link="wheel_front_left"/>
     <dynamics damping="0.01" friction="0.01"/>
     <limit effort="50.0" velocity="50.0"/>
   </joint>
   <transmission name="trans_front_left">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="axel_front_left">
+    <joint name="axle_front_left">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="front_left_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+  <transmission name="trans_front_left">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="axle_front_left">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_left_motor">
@@ -107,19 +161,30 @@
       <geometry>
         <cylinder length="0.2" radius="0.25"/>
       </geometry>
+      <contact_coefficients kd="10000.0" kp="20000.0" mu="0.5"/>
     </collision>
   </link>
-  <joint name="axel_front_right" type="continuous">
-    <origin rpy="-1.570795 0 0" xyz="0.4 -0.3 -0.15"/>
+  <joint name="axle_front_right" type="continuous">
+    <origin rpy="-1.570795 0 0" xyz="0 -0.3 0"/>
     <axis xyz="0 0 1"/>
-    <parent link="chassis"/>
+    <parent link="front_axle"/>
     <child link="wheel_front_right"/>
     <dynamics damping="0.01" friction="0.01"/>
     <limit effort="50.0" velocity="50.0"/>
   </joint>
   <transmission name="trans_front_right">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="axel_front_right">
+    <joint name="axle_front_right">
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </joint>
+    <actuator name="front_right_motor">
+      <mechanicalReduction>1</mechanicalReduction>
+      <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    </actuator>
+  </transmission>
+  <transmission name="trans_front_right">
+    <type>transmission_interface/SimpleTransmission</type>
+    <joint name="axle_front_right">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="front_right_motor">
@@ -148,10 +213,11 @@
       <geometry>
         <cylinder length="0.2" radius="0.25"/>
       </geometry>
+      <contact_coefficients kd="10000.0" kp="20000.0" mu="0.5"/>
     </collision>
   </link>
-  <joint name="axel_back_left" type="continuous">
-    <origin rpy="-1.570795 0 0" xyz="-0.4 0.3 -0.15"/>
+  <joint name="axle_back_left" type="continuous">
+    <origin rpy="-1.570795 0 0" xyz="-0.5 0.3 -0.15"/>
     <axis xyz="0 0 1"/>
     <parent link="chassis"/>
     <child link="wheel_back_left"/>
@@ -160,7 +226,7 @@
   </joint>
   <transmission name="trans_back_left">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="axel_back_left">
+    <joint name="axle_back_left">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="back_left_motor">
@@ -189,10 +255,11 @@
       <geometry>
         <cylinder length="0.2" radius="0.25"/>
       </geometry>
+      <contact_coefficients kd="10000.0" kp="20000.0" mu="0.5"/>
     </collision>
   </link>
-  <joint name="axel_back_right" type="continuous">
-    <origin rpy="-1.570795 0 0" xyz="-0.4 -0.3 -0.15"/>
+  <joint name="axle_back_right" type="continuous">
+    <origin rpy="-1.570795 0 0" xyz="-0.5 -0.3 -0.15"/>
     <axis xyz="0 0 1"/>
     <parent link="chassis"/>
     <child link="wheel_back_right"/>
@@ -201,7 +268,7 @@
   </joint>
   <transmission name="trans_back_right">
     <type>transmission_interface/SimpleTransmission</type>
-    <joint name="axel_back_right">
+    <joint name="axle_back_right">
       <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     </joint>
     <actuator name="back_right_motor">
@@ -233,11 +300,12 @@
     <parent link="camera_link"/>
     <child link="camera_link_optical"/>
   </joint>
+  <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+    <robotNamespace>/car</robotNamespace>
+  </plugin>
   <gazebo reference="camera_link">
-    <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+    <sensor name="front_camera" type="camera">
       <robotNamespace>/car</robotNamespace>
-    </plugin>
-    <sensor name="camera" type="camera">
       <pose> 0 0 0 0 0 0 </pose>
       <visualize>true</visualize>
       <update_rate>10</update_rate>
@@ -254,6 +322,7 @@
         </clip>
       </camera>
       <plugin filename="libgazebo_ros_camera.so" name="camera_controller">
+        <robotNamespace>/car</robotNamespace>
         <frame_name>camera_link_optical</frame_name>
       </plugin>
     </sensor>

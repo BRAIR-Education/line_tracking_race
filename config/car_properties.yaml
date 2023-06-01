@@ -1,0 +1,22 @@
+# Dimensions
+BOX_LX: 1.0
+BOX_LY: 0.6
+BOX_LZ: 0.3
+
+WHEEL_R: 0.25
+WHEEL_L: 0.2
+WHEEL_D: 1.4
+# Masses
+BOX_MASS: 0.5
+WHEEL_MASS: 0.05
+
+# Wheel contact properties of wheels: coefficents of friction, stiffness and damping
+WHEEL_MU: 0.5
+WHEEL_KP: 20000.0
+WHEEL_KD: 10000.0
+
+# Properties of joints
+JOINT_DAMPING: 0.01
+JOINT_FRICTION: 0.01
+JOINT_MAX_SPEED: 50.0
+JOINT_MAX_EFFORT: 50.0

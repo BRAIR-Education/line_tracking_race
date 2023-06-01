@@ -8,32 +8,20 @@
     <!--CONSTANTS-->
     <xacro:property name="PI" value="3.14159" />
 
-    <xacro:property name="BOX_LX" value="1.0"/>
-    <xacro:property name="BOX_LY" value="0.6"/>
-    <xacro:property name="BOX_LZ" value="0.3"/>
+    <!-- Load car properties from YAML, compute moments if inertia based on masses -->
+    <xacro:property name="yaml_file" value="$(find line_tracking_race)/config/car_properties.yaml" />
+    <xacro:property name="p" value="${xacro.load_yaml(yaml_file)}"/>
 
-    <xacro:property name="WHEEL_R" value="0.25"/>
-    <xacro:property name="WHEEL_L" value="0.2"/>
-    <xacro:property name="WHEEL_D" value="1.4"/>
+    <xacro:property name="BOX_IXX" value="${p['BOX_MASS'] * (p['BOX_LY'] * p['BOX_LY'] + p['BOX_LZ'] * p['BOX_LZ']) / 12.0}"/>
+    <xacro:property name="BOX_IYY" value="${p['BOX_MASS'] * (p['BOX_LX'] * p['BOX_LX'] + p['BOX_LZ'] * p['BOX_LZ']) / 12.0}"/>
+    <xacro:property name="BOX_IZZ" value="${p['BOX_MASS'] * (p['BOX_LX'] * p['BOX_LX'] + p['BOX_LY'] * p['BOX_LY']) / 12.0}"/>
 
+    <xacro:property name="WHEEL_IXX" value="${p['WHEEL_MASS']*(3*p['WHEEL_R']*p['WHEEL_R'] + p['WHEEL_L']*p['WHEEL_L'])/12.0}"/>
+    <xacro:property name="WHEEL_IYY" value="${p['WHEEL_MASS']*(3*p['WHEEL_R']*p['WHEEL_R'] + p['WHEEL_L']*p['WHEEL_L'])/12.0}"/>
+    <xacro:property name="WHEEL_IZZ" value="${0.5*p['WHEEL_MASS']*p['WHEEL_R']*p['WHEEL_R']}"/>
 
-    <xacro:property name="BOX_MASS" value="0.5"/>
-    <xacro:property name="BOX_IXX" value="${BOX_MASS * (BOX_LY * BOX_LY + BOX_LZ * BOX_LZ) / 12.0}"/>
-    <xacro:property name="BOX_IYY" value="${BOX_MASS * (BOX_LX * BOX_LX + BOX_LZ * BOX_LZ) / 12.0}"/>
-    <xacro:property name="BOX_IZZ" value="${BOX_MASS * (BOX_LX * BOX_LX + BOX_LY * BOX_LY) / 12.0}"/>
+    <!--########### COLORS used for the links. Only in RViz, for Gazebo is different ###########-->
 
-    <xacro:property name="WHEEL_MASS" value="0.05"/>
-    <xacro:property name="WHEEL_IXX" value="${WHEEL_MASS*(3*WHEEL_R*WHEEL_R + WHEEL_L*WHEEL_L)/12.0}"/>
-    <xacro:property name="WHEEL_IYY" value="${WHEEL_MASS*(3*WHEEL_R*WHEEL_R + WHEEL_L*WHEEL_L)/12.0}"/>
-    <xacro:property name="WHEEL_IZZ" value="${0.5*WHEEL_MASS*WHEEL_R*WHEEL_R}"/>
-    <xacro:property name="JOINT_DAMPING" value="0.01" />
-    <xacro:property name="JOINT_FRICTION" value="0.01" />
-    <xacro:property name="JOINT_MAX_SPEED" value="50.0" />
-    <xacro:property name="JOINT_MAX_EFFORT" value="50.0" />
-
-    <!--########### COLORS used for the links ###########-->
-    <!--colors are currently implemented as macro because just defining them, as shown in the ROS tutorial, seems not to work-->
-    
     <material name="box_material">
         <color rgba="1 0.15 0.08 0.3"/>
     </material>
@@ -46,38 +34,51 @@
 
     <!--########### MACRO for links and joints ###########-->
 
-    <xacro:macro name="wheel_macro" params="n parent x y z">
+    <xacro:macro name="wheel_macro" params="n parent x y z actuated">
         <link name="wheel_${n}">
             <inertial>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
-                <mass value="${WHEEL_MASS}"/>
+                <mass value="${p['WHEEL_MASS']}"/>
                 <inertia ixx="${WHEEL_IXX}"  ixy="0"  ixz="0" iyy="${WHEEL_IYY}" iyz="0" izz="${WHEEL_IZZ}" />
             </inertial>
             <visual>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
-                <cylinder radius="${WHEEL_R}" length="${WHEEL_L}" />
+                <cylinder radius="${p['WHEEL_R']}" length="${p['WHEEL_L']}" />
                 </geometry>
                 <material name="wheel_material"/>
             </visual>
             <collision>
                 <origin xyz="0 0 0" rpy="0 0 0"/>
                 <geometry>
-                <cylinder radius="${WHEEL_R}" length="${WHEEL_L}" />
+                <cylinder radius="${p['WHEEL_R']}" length="${p['WHEEL_L']}" />
                 </geometry>
+                <contact_coefficients mu="${p['WHEEL_MU']}" kp="${p['WHEEL_KP']}" kd="${p['WHEEL_KD']}"/>
             </collision>
         </link>
-        <joint name="axel_${n}" type="continuous">
+        <joint name="axle_${n}" type="continuous">
             <origin xyz="${x} ${y} ${z}" rpy="${-PI/2} 0 0"/>
             <axis xyz="0 0 1"/>
             <parent link="${parent}"/>
             <child link="wheel_${n}"/>
-            <dynamics damping="${JOINT_DAMPING}" friction="${JOINT_FRICTION}"/>
-            <limit effort="${JOINT_MAX_EFFORT}" velocity="${JOINT_MAX_SPEED}"/>
+            <dynamics damping="${p['JOINT_DAMPING']}" friction="${p['JOINT_FRICTION']}"/>
+            <limit effort="${p['JOINT_MAX_EFFORT']}" velocity="${p['JOINT_MAX_SPEED']}"/>
         </joint>
+        <xacro:if value="${actuated}">
+            <transmission name="trans_${n}">
+                <type>transmission_interface/SimpleTransmission</type>
+                <joint name="axle_${n}">
+                    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+                </joint>
+                <actuator name="${n}_motor">
+                    <mechanicalReduction>1</mechanicalReduction>
+                    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+                </actuator>
+            </transmission>
+        </xacro:if>
         <transmission name="trans_${n}">
             <type>transmission_interface/SimpleTransmission</type>
-            <joint name="axel_${n}">
+            <joint name="axle_${n}">
                 <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
             </joint>
             <actuator name="${n}_motor">
@@ -97,7 +98,7 @@
     <link name="chassis">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0"/>
-            <mass value="${BOX_MASS}"/>
+            <mass value="${p['BOX_MASS']}"/>
             <inertia ixx="${BOX_IXX}"  ixy="0"  ixz="0" 
                         iyy="${BOX_IYY}" iyz="0" 
                         izz="${BOX_IZZ}" />
@@ -105,36 +106,85 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="${BOX_LX} ${BOX_LY} ${BOX_LZ}" />
+                <box size="${p['BOX_LX']} ${p['BOX_LY']} ${p['BOX_LZ']}" />
             </geometry>
             <material name="box_material"/>
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0"/>
             <geometry>
-                <box size="${BOX_LX} ${BOX_LY} ${BOX_LZ}" />
+                <box size="${p['BOX_LX']} ${p['BOX_LY']} ${p['BOX_LZ']}" />
             </geometry>
         </collision>
     </link>
     
     <gazebo reference="chassis">
-            <material>Gazebo/RedBright </material>
+            <material>Gazebo/RedTransparent</material>
     </gazebo>
 
+    <!-- Dummy link with null inertia for KDL -->
     <link name="base_link" />
-
     <joint name="base_link_to_chassis" type="fixed">
         <parent link="base_link"/>
         <child link="chassis"/>
     </joint>
 
-    <xacro:wheel_macro n="front_left" parent="chassis" x="${BOX_LX * (2/5)}" y="${BOX_LY/2}" z="${-BOX_LZ/2}"/>
+    <!-- Joint to articulate the front wheels -->
+    <link name="front_axle">
+        <inertial>
+            <origin xyz="0 0 0" rpy="${-PI/2} 0 0"/>
+            <mass value="${p['BOX_MASS']}"/>
+            <inertia ixx="${BOX_IXX}"  ixy="0"  ixz="0" 
+                        iyy="${BOX_IYY}" iyz="0" 
+                        izz="${BOX_IZZ}" />
+            </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="${-PI/2} 0 0"/>
+            <geometry>
+                <cylinder radius="0.06" length="${p['BOX_LY']}" />
+            </geometry>
+            <material name="camera_material"/>
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="${-PI/2} 0 0"/>
+            <geometry>
+                <cylinder radius="0.05" length="${p['BOX_LY']}" />
+            </geometry>
+        </collision>
+    </link>
+    <gazebo reference="front_axle">
+            <material>Gazebo/YellowGlow</material>
+    </gazebo>
 
-    <xacro:wheel_macro n="front_right" parent="chassis" x="${BOX_LX * (2/5)}" y="${-BOX_LY/2}" z="${-BOX_LZ/2}"/>
+    <joint name="steer_front" type="continuous">
+        <origin xyz="${p['BOX_LX'] * (2.5/5)} 0 ${-p['BOX_LZ']/2}" rpy="0 0 0"/>
+        <axis xyz="0 0 1"/>
+        <parent link="chassis"/>
+        <child link="front_axle"/>
+        <dynamics damping="${p['JOINT_DAMPING']}" friction="${p['JOINT_FRICTION']}"/>
+        <limit effort="${p['JOINT_MAX_EFFORT']}" velocity="${p['JOINT_MAX_SPEED']}"/>
+    </joint>
+    <!-- <transmission name="trans_steer_front">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="steer_front">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="steer_front_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </actuator>
+    </transmission> -->
 
-    <xacro:wheel_macro n="back_left" parent="chassis" x="${-BOX_LX * (2/5)}" y="${BOX_LY/2}" z="${-BOX_LZ/2}"/>
 
-    <xacro:wheel_macro n="back_right" parent="chassis" x="${-BOX_LX * (2/5)}" y="${-BOX_LY/2}" z="${-BOX_LZ/2}"/>
+    <!-- Add wheels, only the front one are actuated -->
+
+    <xacro:wheel_macro n="front_left" parent="front_axle" x="0" y="${p['BOX_LY']/2}" z="0" actuated="true"/>
+
+    <xacro:wheel_macro n="front_right" parent="front_axle" x="0" y="${-p['BOX_LY']/2}" z="0" actuated="true"/>
+
+    <xacro:wheel_macro n="back_left" parent="chassis" x="${-p['BOX_LX'] * (2.5/5)}" y="${p['BOX_LY']/2}" z="${-p['BOX_LZ']/2}" actuated="false"/>
+
+    <xacro:wheel_macro n="back_right" parent="chassis" x="${-p['BOX_LX'] * (2.5/5)}" y="${-p['BOX_LY']/2}" z="${-p['BOX_LZ']/2}" actuated="false"/>
 
     <!-- Camera -->
     <link name="camera_link">
@@ -149,7 +199,7 @@
     <joint name="camera_joint" type="fixed">
         <parent link="chassis"/>
         <child link="camera_link"/>
-        <origin xyz="${BOX_LX/2 + 0.02} 0 ${BOX_LZ/2}" rpy="0 ${PI/6} 0"/>
+        <origin xyz="${p['BOX_LX']/2 + 0.02} 0 ${p['BOX_LZ']/2}" rpy="0 ${PI/6} 0"/>
     </joint>
 
     <!-- Image Frame -->
@@ -161,11 +211,13 @@
         <child link="camera_link_optical" />
     </joint>
 
+    <!-- <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/car</robotNamespace>
+    </plugin> -->
+
     <gazebo reference="camera_link">
-        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <sensor name="front_camera" type="camera">
             <robotNamespace>/car</robotNamespace>
-        </plugin>
-        <sensor name="camera" type="camera">
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>true</visualize>
             <update_rate>10</update_rate>
@@ -182,6 +234,7 @@
                 </clip>
             </camera>
             <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <robotNamespace>/car</robotNamespace>
                 <frame_name>camera_link_optical</frame_name>
             </plugin>
         </sensor>
