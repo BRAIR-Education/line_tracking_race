@@ -76,16 +76,6 @@
                 </actuator>
             </transmission>
         </xacro:if>
-        <transmission name="trans_${n}">
-            <type>transmission_interface/SimpleTransmission</type>
-            <joint name="axle_${n}">
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            </joint>
-            <actuator name="${n}_motor">
-                <mechanicalReduction>1</mechanicalReduction>
-                <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
-            </actuator>
-        </transmission>
 
         <gazebo reference="wheel_${n}">
             <material>Gazebo/DarkGrey  </material>
@@ -215,7 +205,7 @@
         <robotNamespace>/car</robotNamespace>
     </plugin> -->
 
-    <gazebo reference="camera_link">
+    <!-- <gazebo reference="camera_link">
         <sensor name="front_camera" type="camera">
             <robotNamespace>/car</robotNamespace>
             <pose> 0 0 0 0 0 0 </pose>
@@ -238,9 +228,6 @@
                 <frame_name>camera_link_optical</frame_name>
             </plugin>
         </sensor>
-    </gazebo>
-
-    
-    
+    </gazebo> -->
 
 </robot>
