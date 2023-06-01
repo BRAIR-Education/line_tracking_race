@@ -1,5 +1,5 @@
 // Define Texture
-material course
+material track
 {
   receive_shadows on
   technique
@@ -9,7 +9,7 @@ material course
       ambient 0.5 0.5 0.5 1.0
       texture_unit
       {
-        texture course.png // Insert Track PNG
+        texture track.png // Insert Track PNG
       }
     }
   }

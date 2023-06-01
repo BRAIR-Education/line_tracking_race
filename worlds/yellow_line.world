@@ -41,8 +41,8 @@
                     </geometry>
                     <material>
                         <script>
-                            <uri>model://course.material</uri>
-                            <name>course</name> <!-- Insert here .png -->
+                            <uri>model://track.material</uri>
+                            <name>track</name> <!-- Insert here .png -->
                         </script>
                     </material>
                 </visual>
