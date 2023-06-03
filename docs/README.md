@@ -1,6 +1,6 @@
 # Line Tracking Problem
 **[Docs under development]**
-Hi Students! Some docs for you to start the project.
+Some information about the kinematic of the system
 
 ## Kinematic Model of Unicycle
 The Kinematic Model of Unicycle can be derived from the null basis of Pfaffian Matrix $A(q)$:
@@ -27,7 +27,17 @@ $$
 \begin{cases}
 v       = \frac{R}{2} \left( \omega_l + \omega_r \right) \\
 \omega  = \frac{R}{L} \left( \omega_r - \omega_l \right)
-\end{cases} \rightarrow \begin{bmatrix} v \\ \omega \end{bmatrix} = \begin{bmatrix} \frac{R}{2} & \frac{R}{2} \\  \frac{R}{L} & -\frac{R}{L} \end{bmatrix} \begin{bmatrix} \omega_r \\ \omega_l \end{bmatrix}
+\end{cases}
+\rightarrow
+\begin{bmatrix}
+  v \\
+  \omega \end{bmatrix} = \begin{bmatrix} \frac{R}{2} & \frac{R}{2} \\
+  \frac{R}{L} & -\frac{R}{L}
+\end{bmatrix}
+\begin{bmatrix}
+    \omega_r \\
+    \omega_l
+\end{bmatrix}
 $$
 
 ### Discretized model
