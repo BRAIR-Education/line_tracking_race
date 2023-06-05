@@ -1,0 +1,26 @@
+# Dimensions
+BOX_LX: 1.0
+BOX_LY: 0.6
+BOX_LZ: 0.3
+
+WHEEL_R: 0.25
+WHEEL_L: 0.2
+WHEEL_D: 1.4
+# Masses
+BOX_MASS: 2.0
+WHEEL_MASS: 0.2
+
+# Wheel contact properties: coefficents of friction, stiffness and damping
+WHEEL_MU1: 200.0
+WHEEL_MU2: 100.0
+WHEEL_KP: 10000000.0
+WHEEL_KD: 1.0
+
+# Limit for front axle steering [deg]
+STEER_FRONT_LIMIT: 60
+
+# Properties of joints
+JOINT_DAMPING: 0.1
+JOINT_FRICTION: 0.05
+JOINT_MAX_SPEED: 50.0
+JOINT_MAX_EFFORT: 50.0

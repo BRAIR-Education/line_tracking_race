@@ -1,26 +1,37 @@
 <launch>
-    <!-- Add models to Gazebo Model Path -->
-    <env name="GAZEBO_MODEL_PATH" value="${GAZEBO_MODEL_PATH}:$(find line_tracking_race)/models"/> 
 
+    <env name="GAZEBO_MODEL_PATH"
+        value="${GAZEBO_MODEL_PATH}:$(find line_tracking_race)/models/track" />
+
+
+    <!-- Arguments that can be passed also from command line -->
+    <arg name="paused" default="false" />
     <!-- Add here your robot's parameters -->
-    <!--<arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
-    <arg name="x_pos" default="0.0"/>
-    <arg name="y_pos" default="0.0"/>
-    <arg name="z_pos" default="0.0"/>
-    <arg name="yaw" default="3.142"/>-->
+    <arg name="x_pos" default="0.0" />
+    <arg name="y_pos" default="0.0" />
+    <arg name="z_pos" default="0.45" />
+    <arg name="yaw" default="3.142" />
 
     <!-- Launch World -->
     <include file="$(find gazebo_ros)/launch/empty_world.launch">
-        <arg name="world_name" value="$(find line_tracking_race)/worlds/yellow_line.world"/>
-        <arg name="paused" value="false"/>
-        <arg name="use_sim_time" value="true"/>
-        <arg name="gui" value="true"/>
-        <arg name="headless" value="false"/>
-        <arg name="debug" value="false"/>
+        <arg name="world_name" value="$(find line_tracking_race)/worlds/yellow_line.world" />
+        <arg name="paused" value="$(arg paused)" />
+        <arg name="use_sim_time" value="true" />
+        <arg name="gui" value="true" />
+        <arg name="headless" value="false" />
+        <arg name="debug" value="false" />
     </include>
 
+    <!-- Process the Xacro and load the URDF into the ROS Parameter Server -->
+    <param name="robot_description"
+        command="$(find xacro)/xacro '$(find line_tracking_race)/models/urdf/car.xacro'" />
+
     <!-- Spawn Robot -->
-    <!--<node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf" args="  -urdf -model turtlebot3_$(arg model) 
-                                                                        -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) 
-                                                                        -Y $(arg yaw) -param robot_description" />-->
+    <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"
+        args="  -urdf -model car 
+                -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) 
+                -Y $(arg yaw) -param robot_description" />
+
+    <!-- Include controller launch file launch file -->
+    <include file="$(find line_tracking_race)/launch/car_control_interface.launch" />
 </launch>

@@ -1,0 +1,33 @@
+car:
+  # Publish all joint states
+  joint_state_controller:
+    type: joint_state_controller/JointStateController
+    publish_rate: 100
+
+  # PID directly on velocity
+  front_left_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: "axle_front_left"
+  front_right_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: "axle_front_right"
+
+  # Gazebo requires its own PID gains to use a hardware_interface/VelocityJointInterface inside the URDF
+  # which is the one compatible with controller of type velocity_controllers/JointVelocityController
+  gazebo_ros_control:
+    pid_gains:
+      axle_front_left:
+        { p: 10.0, i: 0.5, d: 0.0, i_clamp_min: -10000, i_clamp_max: 10000 }
+      axle_front_right:
+        { p: 10.0, i: 0.5, d: 0.0, i_clamp_min: -10000, i_clamp_max: 10000 }
+
+  # --> Currently not used
+  # PID effort velocity controller
+  front_left_veleffort_controller:
+    type: effort_controllers/JointVelocityController
+    joint: axle_front_left
+    pid: { p: 10.0, i: 0.5, d: 0.0 }
+  front_right_veleffort_controller:
+    type: effort_controllers/JointVelocityController
+    joint: axle_front_right
+    pid: { p: 10.0, i: 0.5, d: 0.0 }
