@@ -27,11 +27,15 @@ $$
 
 ### 1.1) Differential Drive Robot Model
 Let be $R$ the radius of a single wheel and $L$ the distance between the two wheels. We can define the angular velocity $\omega_r$ and $\omega_l$ as the two angular velocities of the wheels. From simple geometrical consideration, we can write:
+
 $$
 \begin{cases}
 v       = \frac{R}{2} \left( \omega_l + \omega_r \right) \\
 \omega  = \frac{R}{L} \left( \omega_r - \omega_l \right)
-\end{cases} \rightarrow \begin{bmatrix} v \\ \omega \end{bmatrix} = \begin{bmatrix} \frac{R}{2} & \frac{R}{2} \\  \frac{R}{L} & -\frac{R}{L} \end{bmatrix} \begin{bmatrix} \omega_r \\ \omega_l \end{bmatrix}
+\end{cases} \rightarrow \begin{bmatrix} v \\ 
+                                        \omega \end{bmatrix} = \begin{bmatrix} \frac{R}{2} & \frac{R}{2} \\  
+                                                                    \frac{R}{L} & -\frac{R}{L} \end{bmatrix} \begin{bmatrix} \omega_r \\ 
+                                                                                                                                \omega_l \end{bmatrix}
 $$
 
 ### 1.2) Discretized model
