@@ -5,6 +5,9 @@ Hi Students! Some docs for you to start the project.
     1. [Differential Drive Robot Model](#11-differential-drive-robot-model)
     2. [Discretized Model](#12-discretized-model)
 2. [Control Tasks for a Robotic Vehicle](#2-control-tasks-for-a-robotic-vehicle)
+    1. [Path Following](#21-path-following)
+    2. [Trajectory Tracking](#22-trajectory-tracking)
+3. [ Difference between Trajectory Tracking and Path Following Tasks](#3-difference-between-trajectory-tracking-and-path-following-tasks)
 
 ## 1) Kinematic Model of Unicycle
 The Kinematic Model of Unicycle can be derived from the null basis of Pfaffian Matrix $A(q)$:
@@ -152,7 +155,7 @@ $$
 
 The control law is similar to the *Path Following* case, in which there is also a *feedforward* action, in which we use the information of the linear and angular velocity of the target.
 
-### Difference between Trajectory Tracking and Path Following Tasks
+### 3) Difference between Trajectory Tracking and Path Following Tasks
 In the *Path Following* task, the robot follows an assigned curve, without any specifications on the time. On the contrary, in the *Trajectory Tracking* task, the robotic vehicle tracks a trajectory defined in *time*, such as the robot has to follow a moving target.
  To understand better the real difference between the tasks, let's focus on a simple example. Imagine that we want to control our robot to follows a circular trajectory. We can use both approaches:
  
