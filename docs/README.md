@@ -11,18 +11,18 @@ The Kinematic Model of Unicycle can be derived from the null basis of Pfaffian M
 
 $$ 
 \dot{q}(t) = S(q) \ \nu(t) \rightarrow 
-\begin{pmatrix} 
+\begin{bmatrix} 
 \dot{x} \\
 \dot{y} \\
-\dot{\theta} \end{pmatrix} = \begin{pmatrix} 
+\dot{\theta} \end{bmatrix} = \begin{bmatrix} 
                                 \cos(\theta) & 0 \\
                                 \sin(\theta) & 0 \\
                                 0 & 1 
-                            \end{pmatrix}
-                                        \begin{pmatrix}
+                            \end{bmatrix}
+                                        \begin{bmatrix}
                                             v \\
                                             \omega
-                                        \end{pmatrix}
+                                        \end{bmatrix}
 $$
 
 ### 1.1) Differential Drive Robot Model
@@ -57,7 +57,7 @@ In robotics, there are 3 classic control tasks, such as:
 3. **Path Following**: In this case, the robotic vehicle follows an assigned curve $C(\bm{q}) = \bm{0}$ (e.g. a circumference).
 For Line Following, only the last two tasks are useful.
 
-### 2.2) Path Following
+### 2.1) Path Following
 Let be $p_b = \begin{pmatrix} x_b & y_b \end{pmatrix}^T$ the position of the vehicle. From the fixed frame, we can define the body frame $\{S_{b}\} = \{p_b; \, \hat{i}_b, \hat{j}_b\}$, where:
 $$
 \hat{i}_b = \begin{bmatrix} \cos(\theta) \\ \sin(\theta) \end{bmatrix} \qquad \hat{j}_b = \begin{bmatrix} -\sin(\theta) \\ \cos(\theta) \end{bmatrix} 
@@ -90,7 +90,33 @@ As you can see, in this control law there is:
 - A proportional term $-k_{\psi} \psi$ on the orientation error.
 - A compensation term $\left(- d \, \bar{v} \, \textnormal{sinc}(\psi) + \bar{v} \, \frac{\cos(\psi) \, \gamma(\sigma)}{1 - d \, \gamma(\sigma)}\right)$ that eliminates the nonlinearities in the differential equation in $\dot{\psi}$.
 
+### 2.2) Trajectory Tracking
+Given a desired trajectory $\bm{q}_d$, we can consider it as generated from:
+$$
+\begin{bmatrix} \dot{x}_d \\ \dot{y}_d \\ \dot{\theta}_d \end{bmatrix} = \begin{bmatrix} 
+                                \cos(\theta_d) & 0 \\
+                                \sin(\theta_d) & 0 \\
+                                0 & 1 
+                            \end{bmatrix}
+                                        \begin{bmatrix}
+                                            \hat{v} \\
+                                            \hat{\omega}
+                                        \end{bmatrix}
+$$
+Let be the error state $\bm{e} = \bm{q} - \bm{q}_d = \begin{bmatrix} e_x & e_y & e_{\theta} \end{bmatrix}^T$. To uniform the notation, it is possible to point out that:
+- The cartesian error ($e_x$, $e_y$) expressed in the body frame ($e_x^b$, $e_y^b$) is equivalent of $\sigma$ and $d$ in the case of *Path Following* task.
+$$
+\begin{bmatrix}
+\dot{\sigma} \\ \dot{d} \\ \dot{\psi}
+\end{bmatrix} = \begin{bmatrix} v - \hat{v} \, \cos(\psi) + d \, \omega \\ \hat{v} \sin(\psi) - \sigma \, \omega \\ \omega - \hat{\omega} \end{bmatrix}
+$$
 
+#### Control Algorithms
+From this model, you can simply apply a PID controller on the set (or subset) of error variables $\bm{e}(t)$. A more complex controller algorithm, based on Lyapunov theory can be:
+$$
+\omega(t) = \hat{\omega} - k_{\psi} \, \psi - d \, \hat{v} \, \textnormal{sinc}(\psi) 
+$$
+The control law is similar to the *Path Following* case, in which there is also a *feedforward* action, in which we use the information of the linear and angular velocity of the target.
 ### Difference between Trajectory Tracking and Path Following Tasks
 In the *Path Following* task, the robot follows an assigned curve, without any specifications on the time. On the contrary, in the *Trajectory Tracking* task, the robotic vehicle tracks a trajectory defined in *time*, such as the robot has to follow a moving target.
  To understand better the real difference between the tasks, let's focus on a simple example. Imagine that we want to control our robot to follows a circular trajectory. We can use both approaches:
