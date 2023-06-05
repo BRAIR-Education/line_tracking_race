@@ -86,11 +86,11 @@
             <transmission name="trans_${n}">
                 <type>transmission_interface/SimpleTransmission</type>
                 <joint name="axle_${n}">
-                    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
                     <!-- <hardwareInterface>EffortJointInterface</hardwareInterface> -->
                 </joint>
                 <actuator name="${n}_motor">
-                    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
                     <!-- <hardwareInterface>EffortJointInterface</hardwareInterface> -->
                     <mechanicalReduction>1</mechanicalReduction>
                 </actuator>
@@ -139,7 +139,7 @@
         <child link="chassis" />
     </joint>
 
-    <!-- Frontal axle able to rotate, to which the front wheels will be connected -->
+    <!-- Joint to articulate the front wheels -->
     <link name="front_axle">
         <inertial>
             <origin xyz="0 0 0" rpy="${-PI/2} 0 0" />
@@ -165,15 +165,25 @@
     <gazebo reference="front_axle">
         <material>Gazebo/YellowGlow</material>
     </gazebo>
-    <!-- Joint connecting the front axle to the  chassis. This joint is not controlled.-->
+
     <joint name="steer_front" type="continuous">
-        <origin xyz="${p['BOX_LX']/2} 0 ${-p['BOX_LZ']/2}" rpy="0 0 0" />
+        <origin xyz="${p['BOX_LX'] / 2} 0 ${-p['BOX_LZ']/2}" rpy="0 0 0" />
         <axis xyz="0 0 1" />
         <parent link="chassis" />
         <child link="front_axle" />
         <dynamics damping="${p['JOINT_DAMPING']}" friction="${p['JOINT_FRICTION']}" />
         <limit effort="${p['JOINT_MAX_EFFORT']}" velocity="${p['JOINT_MAX_SPEED']}" />
     </joint>
+    <!-- <transmission name="trans_steer_front">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="steer_front">
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="steer_front_motor">
+            <mechanicalReduction>1</mechanicalReduction>
+            <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        </actuator>
+    </transmission> -->
 
 
     <!-- Add wheels, only the front one are actuated -->

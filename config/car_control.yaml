@@ -12,19 +12,20 @@ car:
     type: velocity_controllers/JointVelocityController
     joint: "axle_front_right"
 
-  # Gazebo requires its own PID gains to use a hardware_interface/VelocityJointInterface
+  # Gazebo requires its own PID gains to use a hardware_interface/VelocityJointInterface inside the URDF
+  # which is the one compatible with controller of type velocity_controllers/JointVelocityController
   gazebo_ros_control:
     pid_gains:
-      axle_front_left: { p: 2.0, i: 0.01, d: 0.05 }
-      axle_front_right: { p: 2.0, i: 0.01, d: 0.05 }
+      axle_front_left: { p: 10.0, i: 0.0, d: 0.005 }
+      axle_front_right: { p: 10.0, i: 0.0, d: 0.005 }
 
-  # # --> Currently not used
-  # # PID effort velocity controller
-  # front_left_veleffort_controller:
-  #   type: effort_controllers/JointVelocityController
-  #   joint: axle_front_left
-  #   pid: { p: 1000.0, i: 0.1, d: 3.0 }
-  # front_right_veleffort_controller:
-  #   type: effort_controllers/JointVelocityController
-  #   joint: axle_front_right
-  #   pid: { p: 1000.0, i: 0.1, d: 3.0 }
+  # --> Currently not used
+  # PID effort velocity controller
+  front_left_veleffort_controller:
+    type: effort_controllers/JointVelocityController
+    joint: axle_front_left
+    pid: { p: 5.0, i: 0.0, d: 0.005 }
+  front_right_veleffort_controller:
+    type: effort_controllers/JointVelocityController
+    joint: axle_front_right
+    pid: { p: 5.0, i: 0.0, d: 0.005 }
