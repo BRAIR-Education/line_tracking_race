@@ -70,8 +70,10 @@
                 <geometry>
                     <cylinder radius="${p['WHEEL_R']}" length="${p['WHEEL_L']}" />
                 </geometry>
-                <contact_coefficients mu="${p['WHEEL_MU']}" kp="${p['WHEEL_KP']}"
-                    kd="${p['WHEEL_KD']}" />
+                <!-- Contact coeffienct not needed, for Gazebo the material properties are defined
+                separately in this file -->
+                <!-- <contact_coefficients mu="${p['WHEEL_MU']}" kp="${p['WHEEL_KP']}"
+                    kd="${p['WHEEL_KD']}" /> -->
             </collision>
         </link>
         <joint name="axle_${n}" type="continuous">
@@ -99,6 +101,10 @@
 
         <gazebo reference="wheel_${n}">
             <material>Gazebo/DarkGrey </material>
+            <mu1 value="${p['WHEEL_MU1']}" />
+            <mu2 value="${p['WHEEL_MU2']}" />
+            <kp value="${p['WHEEL_KD']}" />
+            <kd value="${p['WHEEL_KP']}" />
         </gazebo>
 
     </xacro:macro>
@@ -166,13 +172,15 @@
         <material>Gazebo/YellowGlow</material>
     </gazebo>
     <!-- Joint connecting the front axle to the  chassis. This joint is not controlled.-->
-    <joint name="steer_front" type="continuous">
+    <joint name="steer_front" type="revolute">
         <origin xyz="${p['BOX_LX']/2} 0 ${-p['BOX_LZ']/2}" rpy="0 0 0" />
         <axis xyz="0 0 1" />
         <parent link="chassis" />
         <child link="front_axle" />
         <dynamics damping="${p['JOINT_DAMPING']}" friction="${p['JOINT_FRICTION']}" />
-        <limit effort="${p['JOINT_MAX_EFFORT']}" velocity="${p['JOINT_MAX_SPEED']}" />
+        <limit effort="${p['JOINT_MAX_EFFORT']}" velocity="${p['JOINT_MAX_SPEED']}"
+            upper="${2 * PI * p['STEER_FRONT_LIMIT']/360}"
+            lower="${-2 * PI * p['STEER_FRONT_LIMIT']/360}" />
     </joint>
 
 
@@ -200,10 +208,11 @@
         </visual>
     </link>
 
+    <!-- Camera is rigidly attached to the front axle, not the chassis, but placed above the chassis -->
     <joint name="camera_joint" type="fixed">
-        <parent link="chassis" />
+        <parent link="front_axle" />
         <child link="camera_link" />
-        <origin xyz="${p['BOX_LX']/2 + 0.02} 0 ${p['BOX_LZ']/2}" rpy="0 ${PI/6} 0" />
+        <origin xyz="0.02 0 ${p['BOX_LZ'] + 0.02}" rpy="0 ${PI/6} 0" />
     </joint>
 
     <!-- Image Frame -->
@@ -222,7 +231,7 @@
             <visualize>true</visualize>
             <update_rate>10</update_rate>
             <camera>
-                <horizontal_fov>1.5</horizontal_fov>
+                <horizontal_fov>2.0</horizontal_fov>
                 <image>
                     <format>R8G8B8</format>
                     <width>640</width>
