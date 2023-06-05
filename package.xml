@@ -5,6 +5,11 @@
   <description>The line_tracking_race package</description>
 
   <maintainer email="roscourse@todo.todo">roscourse</maintainer>
+  <maintainer email="d.caradonna@santannapisa.it"> Daniele Caradonna</maintainer>
+  <maintainer email="f.iori@santannapisa.it"> Francesco Iori</maintainer>
+  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
+  <!-- Example:  -->
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
 
   <license>TODO</license>
 
