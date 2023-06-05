@@ -114,10 +114,12 @@ As you can see, in this control law there is:
 - A compensation term $\left(- d \bar{v} \textnormal{sinc}(\psi) + \bar{v} \frac{\cos(\psi) \gamma(\sigma)}{1 - d \gamma(\sigma)}\right)$ that eliminates the nonlinearities in the differential equation in $\dot{\psi}$.
 
 ### 2.2) Trajectory Tracking
-Given a desired trajectory $\bm{q}_d$, we can consider it as generated from:
+Given a desired trajectory $q_d$, we can consider it as generated from:
 
 $$
-\begin{bmatrix} \dot{x}_d \\ \dot{y}_d \\ \dot{\theta}_d \end{bmatrix} = \begin{bmatrix} 
+\begin{bmatrix} \dot{x}_d \\ 
+                \dot{y}_d \\ 
+                \dot{\theta}_d \end{bmatrix} = \begin{bmatrix} 
                                 \cos(\theta_d) & 0 \\
                                 \sin(\theta_d) & 0 \\
                                 0 & 1 
@@ -128,7 +130,7 @@ $$
                                         \end{bmatrix}
 $$
 
-Let be the error state $\bm{e} = \bm{q} - \bm{q}_d = [ e_x , e_y , e_{\theta} ]^T$. To uniform the notation, it is possible to point out that:
+Let be the error state $e = q - q_d = [e_x , e_y , e_{\theta}]^T$. To uniform the notation, it is possible to point out that:
 - The cartesian error ($e_x$, $e_y$) expressed in the body frame ($e_x^b$, $e_y^b$) is equivalent of $\sigma$ and $d$ in the case of *Path Following* task.
 $$
 \begin{bmatrix}
@@ -141,7 +143,7 @@ $$
 $$
 
 #### Control Algorithms
-From this model, you can simply apply a PID controller on the set (or subset) of error variables $\bm{e}(t)$. A more complex controller algorithm, based on Lyapunov theory can be:
+From this model, you can simply apply a PID controller on the set (or subset) of error variables $e(t)$. A more complex controller algorithm, based on Lyapunov theory, can be:
 $$
 \omega(t) = \hat{\omega} - k_{\psi} \psi - d \hat{v} \textnormal{sinc}(\psi) 
 $$
@@ -150,9 +152,20 @@ The control law is similar to the *Path Following* case, in which there is also 
 ### Difference between Trajectory Tracking and Path Following Tasks
 In the *Path Following* task, the robot follows an assigned curve, without any specifications on the time. On the contrary, in the *Trajectory Tracking* task, the robotic vehicle tracks a trajectory defined in *time*, such as the robot has to follow a moving target.
  To understand better the real difference between the tasks, let's focus on a simple example. Imagine that we want to control our robot to follows a circular trajectory. We can use both approaches:
-1. *Trajectory Tracking*: $\bm{q}_d(t) = \begin{pmatrix} x_d(t) \\ y_d(t) \end{pmatrix} = R_{c} \begin{pmatrix} \cos(\omega_{c} t) \\ \sin(\omega_{c} t) \end{pmatrix}$
-2. *Path Following*: $\bm{C}(\bm{q}) = x^2 + y^2 - R_{c}^2$
+*Trajectory Tracking*: 
+
+$$
+q_d(t) = \begin{bmatrix} x_d(t) \\ 
+                               y_d(t) \end{bmatrix} = R_{c} \begin{bmatrix} \cos(\omega_{c} t) \\ 
+                                                                            \sin(\omega_{c} t) \end{bmatrix}
+$$
+
+*Path Following*:
+
+$$
+C(q) = x^2 + y^2 - R_{c}^2
+$$
 
 At the instant $t = \bar{t}$ the robot stop for some reasons (e.g. obstacles) and restart after $\Delta t$. In the case of *Path Following*, the vehicle continue to follow the desired path. On the contrary, in the case of *Trajectory Tracking*, the vehicle is controlled to follow not the path, but the desired trajectory at the instant $\bm{q}_d(t + \Delta t)$, going out from the desired curve and reaching the "moving target". Form this example, we can deduce that:
-- In the case of *Path Following*, the vehicle is forced to follow a **specific curve in space** $\bm{C}(\bm{q})$.
+- In the case of *Path Following*, the vehicle is forced to follow a **specific curve in space** $C(q)$.
 - In the case of *Trajectory Tracking*, the vehicle follows a moving target $q_d(t)$.
