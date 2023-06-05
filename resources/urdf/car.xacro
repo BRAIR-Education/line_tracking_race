@@ -40,11 +40,12 @@
     </material>
 
     <!-- Gazebo plugins -->
-
-    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
-        <robotNamespace>/car</robotNamespace>
-        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
-    </plugin>
+    <gazebo>
+        <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+            <robotNamespace>/car</robotNamespace>
+            <!-- <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType> -->
+        </plugin>
+    </gazebo>
 
     <!--###########
     MACRO for links and joints ###########-->
@@ -85,15 +86,13 @@
             <transmission name="trans_${n}">
                 <type>transmission_interface/SimpleTransmission</type>
                 <joint name="axle_${n}">
-                    <!--
-                    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface> -->
-                    <hardwareInterface>EffortJointInterface</hardwareInterface>
+                    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                    <!-- <hardwareInterface>EffortJointInterface</hardwareInterface> -->
                 </joint>
                 <actuator name="${n}_motor">
+                    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+                    <!-- <hardwareInterface>EffortJointInterface</hardwareInterface> -->
                     <mechanicalReduction>1</mechanicalReduction>
-                    <!--
-                    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface> -->
-                    <hardwareInterface>EffortJointInterface</hardwareInterface>
                 </actuator>
             </transmission>
         </xacro:if>
@@ -226,14 +225,14 @@
         <child link="camera_link_optical" />
     </joint>
 
-    <!-- <gazebo reference="camera_link">
+    <gazebo reference="camera_link">
         <sensor name="front_camera" type="camera">
             <robotNamespace>/car</robotNamespace>
             <pose> 0 0 0 0 0 0 </pose>
             <visualize>true</visualize>
             <update_rate>10</update_rate>
             <camera>
-                <horizontal_fov>5.0</horizontal_fov>
+                <horizontal_fov>1.5</horizontal_fov>
                 <image>
                     <format>R8G8B8</format>
                     <width>640</width>
@@ -249,6 +248,6 @@
                 <frame_name>camera_link_optical</frame_name>
             </plugin>
         </sensor>
-    </gazebo> -->
+    </gazebo>
 
 </robot>

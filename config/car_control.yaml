@@ -4,13 +4,27 @@ car:
     type: joint_state_controller/JointStateController
     publish_rate: 100
 
-  # PID velocity controller
-  joints_position_controller:
-    type: effort_controllers/JointGroupPositionController
-    joints:
-      - axle_front_rightee
-      - axle_front_leftee
-    axle_front_rightee:
-      pid: { p: 1000.0, i: 0.1, d: 3.0 }
-    axle_front_leftee:
-      pid: { p: 1000.0, i: 0.1, d: 3.0 }
+  # PID directly on velocity
+  front_left_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: "axle_front_left"
+  front_right_velocity_controller:
+    type: velocity_controllers/JointVelocityController
+    joint: "axle_front_right"
+
+  # Gazebo requires its own PID gains to use a hardware_interface/VelocityJointInterface
+  gazebo_ros_control:
+    pid_gains:
+      axle_front_left: { p: 2.0, i: 0.01, d: 0.05 }
+      axle_front_right: { p: 2.0, i: 0.01, d: 0.05 }
+
+  # # --> Currently not used
+  # # PID effort velocity controller
+  # front_left_veleffort_controller:
+  #   type: effort_controllers/JointVelocityController
+  #   joint: axle_front_left
+  #   pid: { p: 1000.0, i: 0.1, d: 3.0 }
+  # front_right_veleffort_controller:
+  #   type: effort_controllers/JointVelocityController
+  #   joint: axle_front_right
+  #   pid: { p: 1000.0, i: 0.1, d: 3.0 }
