@@ -6,7 +6,7 @@ Repo with the base ros package for the "line tracking race" project.
 
 Type in your terminal:
 ```
-roslanch line_tracking_race race_track.launch
+roslaunch line_tracking_race race_track.launch
 ```
 
 ## How to control the Vehicle
