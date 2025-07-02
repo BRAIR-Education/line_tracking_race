@@ -195,7 +195,6 @@
         <child>camera_link</child>
       </joint>
 
-
       <joint name='left_wheel_joint' type='revolute'>
         <parent>chassis</parent>
         <child>left_wheel</child>
