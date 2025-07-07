@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">  
+
+    <!--########### COLORS used for the links. Only in RViz, for Gazebo is different ###########-->
+    <material name="box_material">
+        <color rgba="1 0.15 0.08 0.3" />
+    </material>
+    <material name="wheel_material">
+        <color rgba="0.26 0.27 0.3 1.0" />
+    </material>
+    <material name="camera_material">
+        <color rgba="1 0.7 0.3 1.0" />
+    </material>
+    
+</robot>

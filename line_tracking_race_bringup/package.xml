@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>line_tracking_race_bringup</name>
+  <version>0.0.0</version>
+  <description>Contains launch files for the line_tracking_race project</description>
+  <license>Apache 2.0</license>
+  <maintainer email="d.caradonna@santannapisa.it"> Daniele Caradonna</maintainer>
+  <maintainer email="f.iori@santannapisa.it"> Francesco Iori</maintainer>
+
+  <depend>line_tracking_race_description</depend>
+  <depend>line_tracking_race_gazebo</depend>
+
+  <depend>sdformat_urdf</depend>
+  <depend>ros_gz_bridge</depend>
+  <depend>ros_gz_image</depend>
+  <depend>ros_gz_sim</depend>
+  <depend>sensor_msgs</depend>
+  <depend>urdf_launch</depend>
+
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>diff_drive_controller</exec_depend>
+  <exec_depend>joint_state_broadcaster</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+  <exec_depend>ros2launch</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>xacro</exec_depend>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
+

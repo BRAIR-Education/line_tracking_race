@@ -1,0 +1,94 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">  
+
+    <xacro:include filename="car_inertial.xacro" />
+
+   <!-- ########### MODEL LINKS AND JOINTS ########### -->
+
+    <link name="chassis">
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="${p.BOX_MASS}" />
+            <inertia ixx="${BOX_IXX}" ixy="0" ixz="0"
+                iyy="${BOX_IYY}" iyz="0"
+                izz="${BOX_IZZ}" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${p.BOX_LEN_X} ${p.BOX_LEN_Y} ${p.BOX_LEN_Z}" />
+            </geometry>
+            <material name="box_material" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <box size="${p.BOX_LEN_X} ${p.BOX_LEN_Y} ${p.BOX_LEN_Z}" />
+            </geometry>
+        </collision>
+    </link>
+
+    <gazebo reference="chassis">
+        <material>Gazebo/Red</material>
+    </gazebo>
+
+    <!-- Dummy link with null inertia for KDL -->
+    <link name="dummy" />
+    <joint name="dummy_to_chassis" type="fixed">
+        <parent link="dummy" />
+        <child link="chassis" />
+    </joint>
+
+    <!-- Frontal axle able to rotate, to which the front wheels will be connected -->
+    <link name="front_axle">
+        <inertial>
+            <origin xyz="0 0 0" rpy="${-PI/2} 0 0" />
+            <mass value="${p.BOX_MASS}" />
+            <inertia ixx="${BOX_IXX}" ixy="0" ixz="0"
+                iyy="${BOX_IYY}" iyz="0"
+                izz="${BOX_IZZ}" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="${-PI/2} 0 0" />
+            <geometry>
+                <cylinder radius="0.06" length="${p.BOX_LEN_Y}" />
+            </geometry>
+            <material name="camera_material" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="${-PI/2} 0 0" />
+            <geometry>
+                <cylinder radius="0.05" length="${p.BOX_LEN_Y}" />
+            </geometry>
+        </collision>
+    </link>
+    <gazebo reference="front_axle">
+        <material>Gazebo/YellowGlow</material>
+    </gazebo>
+    <!-- Joint connecting the front axle to the chassis. This joint is not controlled.-->
+    <joint name="steer_front" type="revolute">
+        <origin xyz="${p.BOX_LEN_X/2} 0 ${-p.BOX_LEN_Z/2}" rpy="0 0 0" />
+        <axis xyz="0 0 1" />
+        <parent link="chassis" />
+        <child link="front_axle" />
+        <dynamics damping="${p.JOINT_DAMPING}" frictioname="${p.JOINT_FRICTION}" />
+        <limit effort="${p.JOINT_MAX_EFFORT}" velocity="${p.JOINT_MAX_SPEED}"
+            upper="${2 * PI * p.STEER_FRONT_LIMIT/360}"
+            lower="${-2 * PI * p.STEER_FRONT_LIMIT/360}" />
+    </joint>
+
+
+    <!--########### MACRO for links and joints ###########-->
+    <xacro:include filename="car_wheel_macro.xacro" />
+
+    <!-- Add wheels, only the front one are actuated -->
+    <xacro:wheel_macro name="front_left" parent="front_axle"  y="${p.BOX_LEN_Y/2}" actuated="true" props="${p}" />
+    <xacro:wheel_macro name="front_right" parent="front_axle" y="${-p.BOX_LEN_Y/2}" actuated="true" props="${p}" />
+
+    <xacro:wheel_macro name="back_left" parent="chassis" x="${-p.BOX_LEN_X/2}" y="${p.BOX_LEN_Y/2}" z="${-p.BOX_LEN_Z/2}" props="${p}"/>
+    <xacro:wheel_macro name="back_right" parent="chassis" x="${-p.BOX_LEN_X/2}" y="${-p.BOX_LEN_Y/2}" z="${-p.BOX_LEN_Z/2}" props="${p}"/>
+
+    <!--########### COLORS used for the links. Only in RViz, for Gazebo is different ###########-->
+    <xacro:include filename="car_materials.xacro" />
+
+</robot>

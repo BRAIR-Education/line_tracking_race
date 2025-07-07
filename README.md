@@ -1,4 +1,4 @@
-# Line Tracking Race Jazzy Version (Under Develop)
+# Line Tracking Race ROS2 Jazzy + Gazebo Harmonic Version  (Work in progress)
 This repository collects the starting material for the Line Tracking Race project with Gazebo Harmonics and ROS2.
 
 ## 1. Install
@@ -15,18 +15,18 @@ git clone git@github.com:BRAIR-Education/line_tracking_race.git && git checkout 
 Build the simulation:
 ```bash
 cd ~/ros2_ws
-source /opt/ros/$ROS_DISTRO/setup.bash
+source /opt/ros/${ROS_DISTRO}/setup.bash
 sudo rosdep init
 rosdep update
-rosdep install --from-paths src --ignore-src -r -i -y --rosdistro <ROS_DISTRO>
-colcon build --cmake-args -DBUILD_TESTING=ON
+rosdep install --from-paths src --ignore-src -r -i -y --rosdistro ${ROS_DISTRO}
+colcon build
 ```
 
 ## 2. Usage
 Type in the terminal:
 ```bash
-ros2 launch ros_gz_example_bringup diff_drive.launch.py
+ros2 launch line_tracking_race_bringup line_tracking_race.launch.py
 ```
 
 ## 3. Topics and Services
-Explore using the ROS2 command line which information are available and design your high-level node. You can use the package `roos_gz_example_application` as container of your nodes.
+Explore using the ROS2 command line which information are available and design your high-level node. You can use the package `line_tracking_race_application` as container of your nodes.
