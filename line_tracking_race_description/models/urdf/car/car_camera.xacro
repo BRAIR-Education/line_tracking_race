@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="car">  
+    
+    <!-- Camera -->
+    <link name="camera_link">
+        <visual>
+            <geometry>
+                <box size="0.04 0.08 0.08" />
+            </geometry>
+            <material name="camera_material" />
+        </visual>
+    </link>
+
+    <!-- Camera is rigidly attached to the front axle, not the chassis, but placed above the chassis -->
+    <joint name="camera_joint" type="fixed">
+        <parent link="front_axle" />
+        <child link="camera_link" />
+        <origin xyz="0.2 0 ${p.BOX_LEN_Z + 0.02}" rpy="0 ${PI/6} 0" />
+    </joint>
+
+    <!-- Image Frame -->
+    <link name="camera_link_optical" />
+
+    <joint name="camera_optical_joint" type="fixed">
+        <origin xyz="0 0 0" rpy="${-PI/2} ${PI/2} 0" />
+        <parent link="camera_link" />
+        <child link="camera_link_optical" />
+    </joint>
+
+    <gazebo reference="camera_link">
+
+        <sensor name="front_camera" type="camera">
+            <always_on>true</always_on>
+            <visualize>true</visualize>
+            <update_rate>10</update_rate>
+            <topic>camera/image_raw</topic>
+            <gz_frame_id>camera_link_optical</gz_frame_id>
+            <camera>
+                <optical_frame_id>camera_link_optical</optical_frame_id>
+                <camera_info_topic>camera/camera_info</camera_info_topic>
+                <horizontal_fov>2.0</horizontal_fov>
+                <image>
+                    <format>R8G8B8</format>
+                    <width>640</width>
+                    <height>480</height>
+                </image>
+                <clip>
+                    <near>0.05</near>
+                    <far>8.0</far>
+                </clip>
+            </camera>
+        </sensor>
+    </gazebo>
+
+</robot>

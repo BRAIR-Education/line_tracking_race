@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="car">
+
+    <!--
+            To generate the correct .URDF from this XACRO file see
+            https://answers.ros.org/question/10401/how-to-convert-xacro-file-to-urdf-file/
+    
+            ros2 run xacro xacro -o car.urdf car.urdf.xacro
+    -->
+
+    <!-- ###### MODEL LINKS AND JOINTS ###### -->
+    <xacro:include filename="car/car_core.xacro" />
+
+    <!-- ###### CAMERA LINKS/JOINTS/SENSORS ###### -->
+    <xacro:include filename="car/car_camera.xacro" />
+
+    <!-- ###### Car diff_drive plugins ###### -->
+    <xacro:include filename="car/car_diff_drive.xacro" />
+</robot>

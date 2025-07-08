@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<sdf version="1.4">
+  <!-- We use a custom world for the car -->
+
+  <world name="line_tracking_race">
+
+    <!-- Sun -->
+    <include>
+        <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Sun</uri>
+    </include>
+
+    <!-- Track -->
+    <include>
+        <uri>model://line_tracking_race_description/models/line_track</uri>
+    </include>
+
+    <plugin
+      filename="gz-sim-physics-system"
+      name="gz::sim::systems::Physics">
+    </plugin>
+    <plugin
+      filename="gz-sim-sensors-system"
+      name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin
+      filename="gz-sim-scene-broadcaster-system"
+      name="gz::sim::systems::SceneBroadcaster">
+    </plugin>
+    <plugin
+      filename="gz-sim-user-commands-system"
+      name="gz::sim::systems::UserCommands">
+    </plugin>
+  
+  </world>
+</sdf>

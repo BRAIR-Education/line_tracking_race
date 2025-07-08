@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">  
+
+    <xacro:include filename="car_properties.xacro"/>
+
+    <!-- Compute moments if inertia based on masses -->
+    <xacro:property name="BOX_IXX"
+        value="${p.BOX_MASS * (p.BOX_LEN_Y * p.BOX_LEN_Y + p.BOX_LEN_Z * p.BOX_LEN_Z) / 12.0}" />
+    <xacro:property name="BOX_IYY"
+        value="${p.BOX_MASS * (p.BOX_LEN_X * p.BOX_LEN_X + p.BOX_LEN_Z * p.BOX_LEN_Z) / 12.0}" />
+    <xacro:property name="BOX_IZZ"
+        value="${p.BOX_MASS * (p.BOX_LEN_X * p.BOX_LEN_X + p.BOX_LEN_Y * p.BOX_LEN_Y) / 12.0}" />
+
+    <xacro:property name="WHEEL_IXX"
+        value="${p.WHEEL_MASS*(3*p.WHEEL_RADIUS*p.WHEEL_RADIUS + p.WHEEL_WIDTH*p.WHEEL_WIDTH)/12.0}" />
+    <xacro:property name="WHEEL_IYY"
+        value="${p.WHEEL_MASS*(3*p.WHEEL_RADIUS*p.WHEEL_RADIUS + p.WHEEL_WIDTH*p.WHEEL_WIDTH)/12.0}" />
+    <xacro:property name="WHEEL_IZZ" value="${0.5*p.WHEEL_MASS*p.WHEEL_RADIUS*p.WHEEL_RADIUS}" />
+
+</robot>

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">  
+
+    <!--CONSTANTS-->
+    <xacro:property name="PI" value="3.1415926535897931" />
+
+    <!-- Load car properties from YAML-->
+    <xacro:property name="yaml_file" value="$(find line_tracking_race_bringup)/config/car_properties.yaml" />
+    <xacro:property name="p" value="${xacro.load_yaml(yaml_file)}" />
+    
+</robot>
