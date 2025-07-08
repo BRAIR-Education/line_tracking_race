@@ -139,12 +139,12 @@ def generate_launch_description():
     )
 
     # Visualize in RViz
-    # rviz = Node(
-    #    package='rviz2',
-    #    executable='rviz2',
-    #    arguments=['-d', PathJoinSubstitution([pkg_project_bringup, "config", 'line_tracking_race.rviz'])],
-    #    condition=IfCondition(LaunchConfiguration('rviz_arg'))
-    # )
+    rviz = Node(
+       package='rviz2',
+       executable='rviz2',
+       arguments=['-d', PathJoinSubstitution([pkg_project_bringup, "config", 'line_tracking_race.rviz'])],
+       condition=IfCondition(LaunchConfiguration('rviz_arg'))
+    )
 
     return LaunchDescription(
         [
