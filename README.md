@@ -1,16 +1,32 @@
-# Line Tracking Race
+# Line Tracking Race ROS2 Jazzy + Gazebo Harmonic Version  (Work in progress)
+This repository collects the starting material for the Line Tracking Race project with Gazebo Harmonics and ROS2.
 
-Repo with the base ros package for the "line tracking race" project.
-
-## How to launch the Simulation
-
-Type in your terminal:
-```
-roslaunch line_tracking_race race_track.launch
+## 1. Install
+### 1.1 Preliminaries
+```bash
+sudo apt install python3-vcstool python3-colcon-common-extensions git wget
 ```
 
-## How to control the Vehicle
+### 1.2 Clone and Build
+Clone in your workspace (e.g., `~/ros2_ws/src`):
+```bash
+git clone git@github.com:BRAIR-Education/line_tracking_race.git && git checkout jazzy
+```
+Build the simulation:
+```bash
+cd ~/ros2_ws
+source /opt/ros/${ROS_DISTRO}/setup.bash
+sudo rosdep init
+rosdep update
+rosdep install --from-paths src --ignore-src -r -i -y --rosdistro ${ROS_DISTRO}
+colcon build
+```
 
-It is possible to control the 2 "motors" of the front wheels of the vehicle, publishing 2 topics named `/car/front_left_velocity_controller/command` and `/car/front_right_velocity_controller/command`, that contain `std_msgs/Float64` as ROS msg type.
+## 2. Usage
+Type in the terminal:
+```bash
+ros2 launch line_tracking_race_bringup line_tracking_race.launch.py
+```
 
-The controller is a PID on the velocity of the wheel. The gain for this controller are defined in the file *./config/car_control.yaml*
+## 3. Topics and Services
+Explore using the ROS2 command line which information are available and design your high-level node. You can use the package `line_tracking_race_application` as container of your nodes.

@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">  
+
+
+    <!--########### MACRO for links and joints ###########-->
+    <xacro:macro name="wheel_macro" params="name parent x:=0 y:=0 z:=0 actuated:=false props">
+        <link name="wheel_${name}">
+            <inertial>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <mass value="${props.WHEEL_MASS}" />
+                <inertia ixx="${WHEEL_IXX}" ixy="0" ixz="0" iyy="${WHEEL_IYY}" iyz="0"
+                    izz="${WHEEL_IZZ}" />
+            </inertial>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <cylinder radius="${props.WHEEL_RADIUS}" length="${props.WHEEL_WIDTH}" />
+                </geometry>
+                <material name="wheel_material" />
+            </visual>
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+                <geometry>
+                    <cylinder radius="${props.WHEEL_RADIUS}" length="${props.WHEEL_WIDTH}" />
+                </geometry>
+            </collision>
+        </link>
+        <joint name="axle_${name}" type="continuous">
+            <origin xyz="${x} ${y} ${z}" rpy="${-PI/2} 0 0" />
+            <axis xyz="0 0 1" />
+            <parent link="${parent}" />
+            <child link="wheel_${name}" />
+            <dynamics damping="${props.JOINT_DAMPING}" friction="${props.JOINT_FRICTION}" />
+            <limit effort="${props.JOINT_MAX_EFFORT}" velocity="${props.JOINT_MAX_SPEED}" />
+        </joint>
+
+        <gazebo reference="wheel_${name}">
+            <material>Gazebo/DarkGrey</material>
+            <mu1 value="${p.WHEEL_MU1}" />
+            <mu2 value="${p.WHEEL_MU2}" />
+            <kp value="${props.WHEEL_KD}" />
+            <kd value="${props.WHEEL_KP}" />
+        </gazebo>
+
+    </xacro:macro>
+</robot>  
