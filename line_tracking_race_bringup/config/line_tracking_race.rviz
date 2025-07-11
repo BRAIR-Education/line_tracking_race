@@ -72,7 +72,7 @@ Visualization Manager:
         Inertia: false
         Mass: false
       Name: RobotModel
-      TF Prefix: car
+      TF Prefix: ""
       Update Interval: 0
       Value: false
       Visual Enabled: true

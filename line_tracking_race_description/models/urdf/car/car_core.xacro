@@ -5,6 +5,7 @@
 
    <!-- ########### MODEL LINKS AND JOINTS ########### -->
 
+    <!-- Base Link -->
     <link name="chassis">
         <inertial>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -77,18 +78,37 @@
             lower="${-2 * PI * p.STEER_FRONT_LIMIT/360}" />
     </joint>
 
-
     <!--########### MACRO for links and joints ###########-->
     <xacro:include filename="car_wheel_macro.xacro" />
 
     <!-- Add wheels, only the front one are actuated -->
-    <xacro:wheel_macro name="front_left" parent="front_axle"  y="${p.BOX_LEN_Y/2}" actuated="true" props="${p}" />
-    <xacro:wheel_macro name="front_right" parent="front_axle" y="${-p.BOX_LEN_Y/2}" actuated="true" props="${p}" />
+    <xacro:wheel_macro name="front_left" parent="front_axle"  y="${p.BOX_LEN_Y/2}" props="${p}" />
+    <xacro:wheel_macro name="front_right" parent="front_axle" y="${-p.BOX_LEN_Y/2}" props="${p}" />
 
     <xacro:wheel_macro name="back_left" parent="chassis" x="${-p.BOX_LEN_X/2}" y="${p.BOX_LEN_Y/2}" z="${-p.BOX_LEN_Z/2}" props="${p}"/>
     <xacro:wheel_macro name="back_right" parent="chassis" x="${-p.BOX_LEN_X/2}" y="${-p.BOX_LEN_Y/2}" z="${-p.BOX_LEN_Z/2}" props="${p}"/>
 
+    <!--########### Gazebo plugins ###########-->
+    <gazebo>
+        <!-- <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
+                <topic>joint_states</topic>
+                <joint_name>axle_front_left</joint_name>
+                <joint_name>axle_front_right</joint_name>
+        </plugin> -->
+
+        <!-- <plugin
+            filename="gz-sim-pose-publisher-system" name="gz::sim::systems::PosePublisher">
+            <publish_link_pose>true</publish_link_pose>
+            <use_pose_vector_msg>true</use_pose_vector_msg>
+            <static_publisher>true</static_publisher>
+            <static_update_frequency>1</static_update_frequency>
+        </plugin> -->
+    </gazebo>
+
     <!--########### COLORS used for the links. Only in RViz, for Gazebo is different ###########-->
     <xacro:include filename="car_materials.xacro" />
+
+
+
 
 </robot>
