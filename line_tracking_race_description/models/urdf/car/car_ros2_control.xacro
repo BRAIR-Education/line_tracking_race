@@ -9,7 +9,6 @@
         <!-- joint names defined in car_wheel_macro.xacro -->
         <joint name="axle_front_left"> 
             <command_interface name="velocity"/>
-
             <!-- <command_interface name="velocity_pid"/>
             <param name="vel_kp">10</param>
             <param name="vel_ki">5</param>
@@ -29,6 +28,20 @@
 
             <state_interface name="velocity" />
             <state_interface name="position" />
+        </joint>
+
+        <joint name="steer_front">
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+                <joint name="axle_back_left">
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
+        </joint>
+
+        <joint name="axle_back_right">
+            <state_interface name="position"/>
+            <state_interface name="velocity"/>
         </joint>
 
         <transmission name="transmission_front_left">
