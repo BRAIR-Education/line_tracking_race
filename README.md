@@ -27,6 +27,20 @@ Type in the terminal:
 ```bash
 ros2 launch line_tracking_race_bringup line_tracking_race.launch.py
 ```
+### 2.1 Arguments
+Inspect the Launch file for the complete list of parameters.
+
+The most relevant ones are:
+- `use_ros2_control` (`bool`): Use ros2_control [differential drive controller](https://control.ros.org/jazzy/doc/ros2_controllers/diff_drive_controller/doc/userdoc.html) instead of Gazebo's [DiffDrive](https://gazebosim.org/api/sim/8/classgz_1_1sim_1_1systems_1_1DiffDrive.html).
+    ```bash 
+    ros2 launch line_tracking_race_bringup line_tracking_race.launch.py use_ros2_control:=true
+    ```
+- `rviz` (`bool`): Start Rviz2
+    ```bash 
+    ros2 launch line_tracking_race_bringup line_tracking_race.launch.py rviz:=true
+    ```
+
+
 
 ## 3. Topics and Services
 Explore using the ROS2 command line which information are available and design your high-level node. You can use the package `line_tracking_race_application` as container of your nodes.
