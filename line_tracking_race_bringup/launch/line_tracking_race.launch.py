@@ -123,7 +123,7 @@ def generate_launch_description():
     )
 
     rviz_arg = DeclareLaunchArgument(
-        'rviz', default_value='true', description='Open RViz.')
+        'rviz', default_value='false', description='Open RViz.')
     
     # --------- Launch Gazebo server and ros_gz_bridge with ros_gz_sim.launch ---------
     # https://github.com/gazebosim/ros_gz/blob/ros2/ros_gz_sim/launch/ros_gz_sim.launch.py
@@ -228,14 +228,14 @@ def generate_launch_description():
             yaw_arg,
             use_ros2_control_arg,
             car_ros2_control_file_arg,
-            # rviz_arg,
+            rviz_arg,
             # gz_sim_ros_bridge,
             # gz_gui_cmd,
             gz_sim,
             gz_bridge,
             robot_state_publisher,
             spawn_robot_node,
-            ros2_control
-            # rviz
+            ros2_control,
+            rviz
         ]
     )
