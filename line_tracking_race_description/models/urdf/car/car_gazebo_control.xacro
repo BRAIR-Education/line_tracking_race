@@ -24,8 +24,11 @@
             
             <!-- Odometry published by DiffDrive -->
             <odom_publish_frequency>30</odom_publish_frequency>
+            <frame_id>odom</frame_id>
+            <child_frame_id>chassis</child_frame_id>
 
-            <tf_topic>/tf</tf_topic>
+            <!-- Publish TF odom->chassis -->
+            <tf_topic>tf</tf_topic>
         </plugin>
         
         <plugin filename="gz-sim-joint-state-publisher-system" name="gz::sim::systems::JointStatePublisher">
