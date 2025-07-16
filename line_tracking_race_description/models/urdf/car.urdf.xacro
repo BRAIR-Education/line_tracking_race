@@ -8,12 +8,22 @@
             ros2 run xacro xacro -o car.urdf car.urdf.xacro
     -->
 
+    <xacro:arg name="use_ros2_control" default="false"/>
+
     <!-- ###### MODEL LINKS AND JOINTS ###### -->
     <xacro:include filename="car/car_core.xacro" />
 
     <!-- ###### CAMERA LINKS/JOINTS/SENSORS ###### -->
     <xacro:include filename="car/car_camera.xacro" />
 
-    <!-- ###### Car diff_drive plugins ###### -->
-    <xacro:include filename="car/car_diff_drive.xacro" />
+    <xacro:if value="$(arg use_ros2_control)">
+        <!-- ###### ros2_control plugins ###### -->
+        <xacro:include filename="car/car_ros2_control.xacro" />
+    </xacro:if>
+
+    <xacro:unless value="$(arg use_ros2_control)">
+        <!-- ###### Gazebo control plugins ###### -->
+        <xacro:include filename="car/car_gazebo_control.xacro" />
+    </xacro:unless>
+
 </robot>
