@@ -2,7 +2,7 @@
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>line_tracking_race_bringup</name>
-  <version>0.0.0</version>
+  <version>0.1.0</version>
   <description>Contains launch files for the line_tracking_race project</description>
   <license>Apache 2.0</license>
   <maintainer email="d.caradonna@santannapisa.it"> Daniele Caradonna</maintainer>
@@ -16,7 +16,6 @@
   <depend>ros_gz_image</depend>
   <depend>ros_gz_sim</depend>
   <depend>sensor_msgs</depend>
-  <depend>urdf_launch</depend>
 
   <exec_depend>controller_manager</exec_depend>
   <exec_depend>diff_drive_controller</exec_depend>
